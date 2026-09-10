@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Monday Morning Briefs</title>
 <meta name="description" content="Index of the Monday morning briefs.">
+<meta name="theme-color" content="#F9F9F7">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/fonts.css">
 <style>
@@ -13,57 +14,73 @@
   --ink-grey:#B4B3A8; --hair:#E4E3DC; --edge:#E1E1DF; --clay:#C6613F;
   --sys:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   --serif:'Fraunces',Georgia,serif;
-  --rail:308px;
+  --rail:296px; --barh:56px;
+  --gutter:max(16px, env(safe-area-inset-left));
 }
 *{box-sizing:border-box;}
 html,body{height:100%;}
 body{
   margin:0;background:var(--bg);color:var(--ink-soft);
   font-family:var(--sys);font-size:15px;line-height:1.62;
-  -webkit-font-smoothing:antialiased;
+  -webkit-font-smoothing:antialiased;overscroll-behavior-y:none;
 }
 a{color:inherit;}
+button{font:inherit;color:inherit;}
+[hidden]{display:none !important;}
+:focus-visible{outline:2px solid var(--clay);outline-offset:2px;}
 
 /* ── top bar ───────────────────────────────────────── */
 .app{display:flex;flex-direction:column;height:100%;}
 .bar{
-  flex:0 0 auto;display:flex;align-items:center;gap:16px;
-  padding:0 20px;height:56px;
+  flex:0 0 auto;display:flex;align-items:center;gap:12px;
+  padding:0 var(--gutter);height:var(--barh);
   background:var(--wash);border-bottom:1px solid var(--edge);
+  padding-top:env(safe-area-inset-top);
+  height:calc(var(--barh) + env(safe-area-inset-top));
 }
 .mark{
   font-family:var(--serif);font-weight:600;font-size:17px;
   color:var(--ink);letter-spacing:-.01em;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
 }
 .mark span{color:var(--ink-grey);}
 .bar .spacer{flex:1 1 auto;}
+
 .ghost{
   display:inline-flex;align-items:center;gap:6px;
   font-size:12.5px;letter-spacing:.02em;color:var(--ink-soft);
   text-decoration:none;padding:6px 11px;border:1px solid var(--edge);
-  border-radius:5px;background:var(--bg);white-space:nowrap;
+  border-radius:5px;background:var(--bg);white-space:nowrap;cursor:pointer;
 }
 .ghost:hover{color:var(--ink);border-color:var(--ink-grey);}
 .ghost svg{width:14px;height:14px;fill:currentColor;flex:0 0 auto;}
 
+.burger{
+  display:none;align-items:center;justify-content:center;
+  width:38px;height:38px;margin-left:-8px;
+  background:none;border:0;border-radius:6px;cursor:pointer;
+}
+.burger:hover{background:var(--bg);}
+.burger svg{width:19px;height:19px;stroke:var(--ink);stroke-width:1.6;fill:none;stroke-linecap:round;}
+
 /* ── layout ────────────────────────────────────────── */
-.body{flex:1 1 auto;display:flex;min-height:0;}
+.body{flex:1 1 auto;display:flex;min-height:0;position:relative;}
 
 .rail{
   flex:0 0 var(--rail);width:var(--rail);
   background:var(--wash);border-right:1px solid var(--edge);
   display:flex;flex-direction:column;min-height:0;
 }
-.filter{flex:0 0 auto;padding:14px 16px;border-bottom:1px solid var(--hair);}
+.filter{flex:0 0 auto;padding:14px 16px 12px;border-bottom:1px solid var(--hair);}
 .filter input{
-  width:100%;font:inherit;font-size:13.5px;color:var(--ink);
-  padding:7px 10px;background:var(--bg);
+  width:100%;font:inherit;font-size:16px;color:var(--ink);
+  padding:8px 10px;background:var(--bg);
   border:1px solid var(--edge);border-radius:5px;
 }
 .filter input::placeholder{color:var(--ink-grey);}
 .filter input:focus{outline:none;border-color:var(--ink-grey);}
 
-.list{flex:1 1 auto;overflow-y:auto;padding:6px 0 28px;}
+.list{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 0 32px;}
 .group{
   font-size:11px;letter-spacing:.11em;text-transform:uppercase;
   color:var(--ink-grey);padding:16px 16px 7px;
@@ -71,8 +88,7 @@ a{color:inherit;}
 .item{
   display:block;width:100%;text-align:left;background:none;
   border:0;border-left:2px solid transparent;
-  font:inherit;color:inherit;cursor:pointer;
-  padding:11px 16px 12px 18px;text-decoration:none;
+  cursor:pointer;padding:11px 16px 12px 18px;text-decoration:none;
 }
 .item:hover{background:var(--bg);}
 .item[aria-current="true"]{background:var(--bg);border-left-color:var(--clay);}
@@ -90,127 +106,257 @@ a{color:inherit;}
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
   line-clamp:2;overflow:hidden;
 }
-
-/* ── reading pane ──────────────────────────────────── */
-.pane{flex:1 1 auto;display:flex;flex-direction:column;min-width:0;min-height:0;}
-.meta{
-  flex:0 0 auto;display:flex;align-items:flex-start;gap:16px;
-  padding:15px 24px 14px;border-bottom:1px solid var(--edge);background:var(--bg);
+.all{
+  display:flex;align-items:center;gap:8px;width:100%;
+  padding:11px 16px 11px 18px;border:0;border-left:2px solid transparent;
+  background:none;cursor:pointer;text-align:left;
+  font-size:13px;letter-spacing:.02em;color:var(--ink-soft);
+  border-bottom:1px solid var(--hair);
 }
+.all:hover{background:var(--bg);}
+.all[aria-current="true"]{background:var(--bg);border-left-color:var(--clay);color:var(--ink);font-weight:600;}
+.all .n{margin-left:auto;font-size:11.5px;color:var(--ink-grey);font-weight:400;}
+
+/* ── main pane ─────────────────────────────────────── */
+.pane{flex:1 1 auto;display:flex;flex-direction:column;min-width:0;min-height:0;}
+
+/* gallery of cards */
+.gallery{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.gallery-in{padding:26px var(--gutter) 48px;max-width:1180px;}
+.gallery h1{
+  font-family:var(--serif);font-weight:600;font-size:26px;line-height:1.2;
+  color:var(--ink);letter-spacing:-.015em;margin:0 0 4px;
+}
+.gallery .sub{font-size:13.5px;color:var(--ink-soft);margin:0 0 24px;}
+.grid{
+  display:grid;gap:18px;
+  grid-template-columns:repeat(auto-fill,minmax(272px,1fr));
+}
+.card{
+  display:flex;flex-direction:column;text-decoration:none;
+  background:var(--bg);border:1px solid var(--edge);border-radius:9px;
+  overflow:hidden;transition:border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.card:hover{border-color:var(--ink-grey);box-shadow:0 6px 18px rgba(46,44,39,.07);transform:translateY(-2px);}
+.thumb{
+  position:relative;aspect-ratio:4/3;max-height:250px;overflow:hidden;
+  background:var(--wash);border-bottom:1px solid var(--hair);
+}
+.thumb iframe{
+  position:absolute;top:0;left:0;width:1000px;height:750px;
+  border:0;transform-origin:0 0;pointer-events:none;
+}
+.thumb::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(252,252,251,0) 62%,rgba(252,252,251,.92));
+}
+.card .txt{padding:14px 16px 16px;display:flex;flex-direction:column;flex:1 1 auto;}
+.card .d{
+  font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--clay);margin-bottom:5px;
+}
+.card .t{
+  font-family:var(--serif);font-weight:600;font-size:18px;line-height:1.26;
+  color:var(--ink);letter-spacing:-.01em;margin:0 0 7px;
+}
+.card .l{
+  font-size:13px;line-height:1.55;color:var(--ink-soft);margin:0 0 12px;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;
+  line-clamp:3;overflow:hidden;
+}
+.card .chips{margin-top:auto;}
+.chips{display:flex;flex-wrap:wrap;gap:5px;}
+.chip{
+  font-size:10.5px;letter-spacing:.04em;color:var(--ink-soft);
+  border:1px solid var(--hair);border-radius:99px;padding:2px 8px;white-space:nowrap;
+}
+
+/* reader */
+.reader{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;}
+.meta{
+  flex:0 0 auto;display:flex;align-items:center;gap:14px;
+  padding:11px var(--gutter);border-bottom:1px solid var(--edge);background:var(--bg);
+}
+.back{
+  display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;
+  font-size:12.5px;color:var(--ink-soft);background:none;
+  border:1px solid var(--edge);border-radius:5px;padding:6px 11px;cursor:pointer;
+}
+.back:hover{color:var(--ink);border-color:var(--ink-grey);}
 .meta .txt{min-width:0;flex:1 1 auto;}
 .meta .d{
-  font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--ink-grey);margin:0 0 3px;
-}
-.meta h2{
-  font-family:var(--serif);font-weight:600;font-size:19px;line-height:1.25;
-  color:var(--ink);letter-spacing:-.01em;margin:0;
+  font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-grey);margin:0 0 2px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
-.chip{
-  font-size:11px;letter-spacing:.04em;color:var(--ink-soft);
-  border:1px solid var(--hair);border-radius:99px;padding:2px 8px;
+.meta h2{
+  font-family:var(--serif);font-weight:600;font-size:18px;line-height:1.25;
+  color:var(--ink);letter-spacing:-.01em;margin:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .frame{flex:1 1 auto;width:100%;border:0;background:var(--bg);min-height:0;}
 
 .msg{
-  margin:auto;max-width:420px;padding:40px 24px;text-align:center;
+  margin:auto;max-width:430px;padding:48px 24px;text-align:center;
   font-size:14px;color:var(--ink-soft);
 }
 .msg strong{display:block;font-family:var(--serif);font-size:19px;color:var(--ink);margin-bottom:8px;}
-.msg code{font-size:12.5px;background:var(--wash);border:1px solid var(--hair);border-radius:4px;padding:1px 5px;}
 
-.rail-only .pane{display:none;}
+.scrim{
+  display:none;position:absolute;inset:0;z-index:5;
+  background:rgba(46,44,39,.34);
+}
 
-/* ── narrow screens: the rail becomes the whole page ─ */
+/* ── narrow: rail becomes a drawer ─────────────────── */
 @media (max-width:860px){
-  .body{display:block;overflow-y:auto;}
-  .rail{width:100%;flex:none;border-right:0;min-height:100%;}
-  .pane{display:none;}
-  .bar .open{display:none;}
-  .item .l{-webkit-line-clamp:3;line-clamp:3;}
+  .burger{display:inline-flex;}
+  .rail{
+    position:absolute;z-index:6;top:0;bottom:0;left:0;
+    width:min(86vw,var(--rail));flex:none;
+    padding-left:env(safe-area-inset-left);
+    transform:translateX(-101%);
+    transition:transform .22s ease;
+    box-shadow:0 0 34px rgba(46,44,39,.16);
+  }
+  .rail.open{transform:none;}
+  .scrim.show{display:block;}
+  .gallery-in{padding-top:20px;}
+  .gallery h1{font-size:22px;}
+  .grid{gap:14px;}
+  .meta{gap:10px;padding:9px var(--gutter);}
+  .meta h2{font-size:16px;}
+  .meta .d{display:none;}
+  .back span{display:none;}
+  .back{padding:7px 9px;}
+  .bar .gh span{display:none;}
+  .bar .gh{padding:7px 9px;}
+}
+@media (max-width:600px){
+  .grid{grid-template-columns:1fr;}
+  .thumb{aspect-ratio:16/10;}
+}
+@media (prefers-reduced-motion:reduce){
+  .rail{transition:none;}
+  .card{transition:none;}
+  .card:hover{transform:none;}
 }
 </style>
 </head>
 <body>
 <div class="app">
   <header class="bar">
+    <button class="burger" id="burger" aria-label="Show briefs" aria-expanded="false" aria-controls="rail">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14"/></svg>
+    </button>
     <div class="mark">Monday Morning <span>Briefs</span></div>
     <div class="spacer"></div>
-    <a class="ghost open" id="open" href="#" hidden>Open full page &#8599;</a>
-    <a class="ghost" href="https://github.com/sqeaky4100-lab/Monday-morning-briefs" rel="noopener">
+    <a class="ghost gh" href="https://github.com/sqeaky4100-lab/Monday-morning-briefs" rel="noopener">
       <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-      GitHub
+      <span>GitHub</span>
     </a>
   </header>
 
   <div class="body">
-    <nav class="rail" aria-label="Briefs">
-      <div class="filter"><input id="q" type="search" placeholder="Filter briefs" aria-label="Filter briefs" autocomplete="off"></div>
+    <nav class="rail" id="rail" aria-label="Briefs">
+      <div class="filter">
+        <input id="q" type="search" placeholder="Filter briefs" aria-label="Filter briefs" autocomplete="off">
+      </div>
+      <button class="all" id="all" aria-current="true">All briefs <span class="n" id="all-n"></span></button>
       <div class="list" id="list"></div>
     </nav>
-    <main class="pane" id="pane">
-      <div class="meta">
-        <div class="txt">
-          <p class="d" id="m-date"></p>
-          <h2 id="m-title"></h2>
-          <div class="chips" id="m-chips"></div>
+
+    <div class="scrim" id="scrim" hidden></div>
+
+    <main class="pane">
+      <section class="gallery" id="gallery" aria-label="All briefs">
+        <div class="gallery-in">
+          <h1 id="g-title">All briefs</h1>
+          <p class="sub" id="g-sub"></p>
+          <div class="grid" id="grid"></div>
         </div>
-      </div>
-      <iframe class="frame" id="frame" title="Selected brief"></iframe>
+      </section>
+
+      <section class="reader" id="reader" hidden>
+        <div class="meta">
+          <button class="back" id="back">&#8592; <span>All briefs</span></button>
+          <div class="txt">
+            <p class="d" id="m-date"></p>
+            <h2 id="m-title"></h2>
+          </div>
+          <a class="ghost" id="open" href="#" rel="noopener">Open &#8599;</a>
+        </div>
+        <iframe class="frame" id="frame" title="Selected brief"></iframe>
+      </section>
     </main>
   </div>
 </div>
 
 <script>
 (function () {
-  var list = document.getElementById('list');
-  var pane = document.getElementById('pane');
-  var frame = document.getElementById('frame');
-  var open = document.getElementById('open');
-  var q = document.getElementById('q');
-  var mDate = document.getElementById('m-date');
-  var mTitle = document.getElementById('m-title');
-  var mChips = document.getElementById('m-chips');
+  var $ = function (id) { return document.getElementById(id); };
+  var list = $('list'), grid = $('grid'), gallery = $('gallery'), reader = $('reader');
+  var rail = $('rail'), scrim = $('scrim'), burger = $('burger'), all = $('all');
+  var q = $('q'), frame = $('frame'), open = $('open'), back = $('back');
+  var mDate = $('m-date'), mTitle = $('m-title'), gSub = $('g-sub'), allN = $('all-n');
 
-  var briefs = [];
-  var shown = [];
-  var current = null;
+  var briefs = [], shown = [], current = null;
   var narrow = window.matchMedia('(max-width: 860px)');
-
-  function message(title, detail) {
-    list.innerHTML = '';
-    var d = document.createElement('div');
-    d.className = 'msg';
-    var s = document.createElement('strong');
-    s.textContent = title;
-    d.appendChild(s);
-    d.appendChild(document.createTextNode(detail));
-    list.appendChild(d);
-    document.querySelector('.app').classList.add('rail-only');
-  }
+  var THUMB_W = 1000;
 
   var MONTHS = ['January','February','March','April','May','June','July',
                 'August','September','October','November','December'];
+  function parts(iso) { var p = iso.split('-'); return { y: +p[0], m: +p[1] - 1, d: +p[2] }; }
+  function shortDate(iso) { var p = parts(iso); return MONTHS[p.m].slice(0, 3) + ' ' + p.d; }
+  function groupLabel(iso) { var p = parts(iso); return MONTHS[p.m] + ' ' + p.y; }
 
-  function parts(iso) {
-    var p = iso.split('-');
-    return { y: +p[0], m: +p[1] - 1, d: +p[2] };
+  /* ── drawer ─────────────────────────────────────── */
+  function drawer(openIt) {
+    rail.classList.toggle('open', openIt);
+    scrim.classList.toggle('show', openIt);
+    scrim.hidden = !openIt;
+    burger.setAttribute('aria-expanded', String(openIt));
+    burger.setAttribute('aria-label', openIt ? 'Hide briefs' : 'Show briefs');
   }
-  function shortDate(iso) {
-    var p = parts(iso);
-    return MONTHS[p.m].slice(0, 3) + ' ' + p.d;
-  }
-  function groupLabel(iso) {
-    var p = parts(iso);
-    return MONTHS[p.m] + ' ' + p.y;
-  }
+  burger.addEventListener('click', function () {
+    drawer(!rail.classList.contains('open'));
+  });
+  scrim.addEventListener('click', function () { drawer(false); });
+  narrow.addEventListener('change', function () { drawer(false); });
 
-  function render() {
+  /* ── thumbnails ─────────────────────────────────── */
+  // Each card previews the real brief in a scaled-down iframe, so the gallery
+  // needs no screenshot pipeline. Scale is set from the card's actual width.
+  function fitThumbs() {
+    var thumbs = grid.querySelectorAll('.thumb');
+    for (var i = 0; i < thumbs.length; i++) {
+      var f = thumbs[i].querySelector('iframe');
+      if (!f) continue;
+      var w = thumbs[i].clientWidth;
+      if (w) f.style.transform = 'scale(' + (w / THUMB_W) + ')';
+    }
+  }
+  var io = 'IntersectionObserver' in window
+    ? new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var f = e.target.querySelector('iframe');
+          if (f && !f.src) f.src = f.dataset.src;
+          io.unobserve(e.target);
+        });
+      }, { rootMargin: '400px' })
+    : null;
+
+  var fitPending;
+  window.addEventListener('resize', function () {
+    clearTimeout(fitPending);
+    fitPending = setTimeout(fitThumbs, 120);
+  });
+
+  /* ── rendering ──────────────────────────────────── */
+  function renderRail() {
     list.innerHTML = '';
     if (!shown.length) {
-      var e = document.createElement('p');
+      var e = document.createElement('div');
       e.className = 'group';
       e.textContent = briefs.length ? 'No matches' : 'No briefs yet';
       list.appendChild(e);
@@ -231,57 +377,128 @@ a{color:inherit;}
       a.href = b.path;
       a.dataset.slug = b.slug;
       a.setAttribute('aria-current', String(b.slug === current));
-      a.innerHTML =
-        '<div class="d"></div><div class="t"></div><div class="l"></div>';
+      a.innerHTML = '<div class="d"></div><div class="t"></div><div class="l"></div>';
       a.querySelector('.d').textContent = shortDate(b.date);
       a.querySelector('.t').textContent = b.title;
       a.querySelector('.l').textContent = b.lede || b.dateline || '';
       a.addEventListener('click', function (ev) {
-        // On narrow screens let the link navigate straight to the brief.
-        if (narrow.matches || ev.metaKey || ev.ctrlKey || ev.shiftKey) return;
+        if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button) return;
         ev.preventDefault();
-        select(b.slug, true);
+        drawer(false);
+        show(b.slug);
       });
       list.appendChild(a);
     });
   }
 
-  function select(slug, pushHash) {
-    var b = briefs.filter(function (x) { return x.slug === slug; })[0];
-    if (!b) return;
-    current = slug;
-    if (pushHash && location.hash.slice(1) !== slug) location.hash = slug;
+  function renderGrid() {
+    grid.innerHTML = '';
+    allN.textContent = briefs.length ? briefs.length : '';
+    gSub.textContent = !briefs.length
+      ? 'Nothing here yet.'
+      : shown.length === briefs.length
+        ? briefs.length + (briefs.length === 1 ? ' brief' : ' briefs') + ', newest first.'
+        : shown.length + ' of ' + briefs.length + ' matching "' + q.value.trim() + '".';
 
-    mDate.textContent = b.dateline || b.date;
-    mTitle.textContent = b.title;
-    mChips.innerHTML = '';
-    (b.sections || []).forEach(function (s) {
-      var c = document.createElement('span');
-      c.className = 'chip';
-      c.textContent = s;
-      mChips.appendChild(c);
-    });
-    open.href = b.path;
-    open.hidden = false;
-    frame.src = b.path;
-    document.title = b.title + ' — Monday Morning Briefs';
+    if (!shown.length) return;
 
-    Array.prototype.forEach.call(list.querySelectorAll('.item'), function (el) {
-      el.setAttribute('aria-current', String(el.dataset.slug === slug));
+    shown.forEach(function (b) {
+      var a = document.createElement('a');
+      a.className = 'card';
+      a.href = b.path;
+      a.dataset.slug = b.slug;
+      a.innerHTML =
+        '<div class="thumb"><iframe tabindex="-1" aria-hidden="true" scrolling="no" loading="lazy"></iframe></div>' +
+        '<div class="txt"><div class="d"></div><h2 class="t"></h2><p class="l"></p><div class="chips"></div></div>';
+      a.querySelector('.d').textContent = b.dateline || shortDate(b.date);
+      a.querySelector('.t').textContent = b.title;
+      a.querySelector('.l').textContent = b.lede || '';
+      var chips = a.querySelector('.chips');
+      (b.sections || []).slice(0, 4).forEach(function (s) {
+        var c = document.createElement('span');
+        c.className = 'chip';
+        c.textContent = s;
+        chips.appendChild(c);
+      });
+      var f = a.querySelector('iframe');
+      f.dataset.src = b.path;
+      f.title = b.title + ' (preview)';
+      a.addEventListener('click', function (ev) {
+        if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button) return;
+        ev.preventDefault();
+        show(b.slug);
+      });
+      grid.appendChild(a);
+      if (io) io.observe(a.querySelector('.thumb'));
+      else f.src = f.dataset.src;
     });
-    var active = list.querySelector('[aria-current="true"]');
-    if (active && active.scrollIntoView) {
-      active.scrollIntoView({ block: 'nearest' });
+    fitThumbs();
+  }
+
+  /* ── views ──────────────────────────────────────── */
+  function markRail() {
+    all.setAttribute('aria-current', String(current === null));
+    var items = list.querySelectorAll('.item');
+    for (var i = 0; i < items.length; i++) {
+      items[i].setAttribute('aria-current', String(items[i].dataset.slug === current));
     }
   }
 
-  function step(delta) {
-    if (!shown.length) return;
-    var i = shown.findIndex(function (b) { return b.slug === current; });
-    var next = shown[Math.max(0, Math.min(shown.length - 1, i + delta))];
-    if (next) select(next.slug, true);
+  function showGallery(pushHash) {
+    current = null;
+    reader.hidden = true;
+    gallery.hidden = false;
+    frame.removeAttribute('src'); // stop the reading pane from staying live
+    document.title = 'Monday Morning Briefs';
+    if (pushHash && location.hash) {
+      history.pushState(null, '', location.pathname + location.search);
+    }
+    markRail();
+    fitThumbs();
   }
 
+  function show(slug, pushHash) {
+    var b = briefs.filter(function (x) { return x.slug === slug; })[0];
+    if (!b) return showGallery(pushHash);
+    current = slug;
+    if (pushHash !== false && location.hash.slice(1) !== slug) location.hash = slug;
+
+    mDate.textContent = b.dateline || b.date;
+    mTitle.textContent = b.title;
+    open.href = b.path;
+    frame.src = b.path;
+    gallery.hidden = true;
+    reader.hidden = false;
+    document.title = b.title + ' — Monday Morning Briefs';
+    markRail();
+
+    var active = list.querySelector('[aria-current="true"].item');
+    if (active && active.scrollIntoView) active.scrollIntoView({ block: 'nearest' });
+  }
+
+  all.addEventListener('click', function () { drawer(false); showGallery(true); });
+  back.addEventListener('click', function () { showGallery(true); });
+
+  function step(delta) {
+    if (current === null || !shown.length) return;
+    var i = -1;
+    for (var n = 0; n < shown.length; n++) if (shown[n].slug === current) i = n;
+    if (i < 0) return;
+    var next = shown[Math.max(0, Math.min(shown.length - 1, i + delta))];
+    if (next && next.slug !== current) show(next.slug);
+  }
+
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape') {
+      if (rail.classList.contains('open')) return drawer(false);
+      if (current !== null) return showGallery(true);
+    }
+    if (ev.target === q || ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    if (ev.key === 'ArrowDown' || ev.key === 'j') { ev.preventDefault(); step(1); }
+    if (ev.key === 'ArrowUp' || ev.key === 'k') { ev.preventDefault(); step(-1); }
+  });
+
+  /* ── filtering ──────────────────────────────────── */
   // Search what the list actually shows — the month and short date labels —
   // not just the ISO date, so "aug" and "september" both find something.
   function haystack(b) {
@@ -292,25 +509,37 @@ a{color:inherit;}
     }
     return b._hay;
   }
-
   q.addEventListener('input', function () {
     var term = q.value.trim().toLowerCase();
     shown = !term ? briefs.slice() : briefs.filter(function (b) {
       return haystack(b).indexOf(term) > -1;
     });
-    render();
+    renderRail();
+    renderGrid();
+    markRail();
   });
 
-  document.addEventListener('keydown', function (ev) {
-    if (ev.target === q || narrow.matches) return;
-    if (ev.key === 'ArrowDown' || ev.key === 'j') { ev.preventDefault(); step(1); }
-    if (ev.key === 'ArrowUp' || ev.key === 'k') { ev.preventDefault(); step(-1); }
-  });
-
-  window.addEventListener('hashchange', function () {
+  /* ── routing ────────────────────────────────────── */
+  function route() {
     var slug = decodeURIComponent(location.hash.slice(1));
-    if (slug && slug !== current) select(slug, false);
-  });
+    if (!slug) return showGallery(false);
+    var known = briefs.some(function (b) { return b.slug === slug; });
+    if (known) show(slug, false);
+    else showGallery(false);
+  }
+  window.addEventListener('hashchange', route);
+  window.addEventListener('popstate', route);
+
+  function fail(title, detail) {
+    gallery.innerHTML = '';
+    var d = document.createElement('div');
+    d.className = 'msg';
+    var s = document.createElement('strong');
+    s.textContent = title;
+    d.appendChild(s);
+    d.appendChild(document.createTextNode(detail));
+    gallery.appendChild(d);
+  }
 
   fetch('briefs.json', { cache: 'no-cache' })
     .then(function (r) {
@@ -322,27 +551,12 @@ a{color:inherit;}
         return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
       });
       shown = briefs.slice();
-      if (!briefs.length) {
-        render();
-        pane.style.display = 'none';
-        return;
-      }
-      var wanted = decodeURIComponent(location.hash.slice(1));
-      var exists = briefs.some(function (b) { return b.slug === wanted; });
-      // Narrow screens have no reading pane, so nothing is "selected" there.
-      current = narrow.matches ? null : (exists ? wanted : briefs[0].slug);
-      render();
-      if (narrow.matches) {
-        // No reading pane here, so a shared #slug link goes to the brief itself.
-        if (exists) location.replace(briefs.filter(function (b) {
-          return b.slug === wanted;
-        })[0].path);
-        return;
-      }
-      select(current, false);
+      renderRail();
+      renderGrid();
+      route();
     })
     .catch(function (err) {
-      message('Could not load the index',
+      fail('Could not load the index',
         'briefs.json did not load (' + err.message + '). Serve this folder over ' +
         'HTTP rather than opening the file directly.');
     });

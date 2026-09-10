@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-10T03:58:22.266Z",
+  "generated": "2026-09-10T04:06:59.272Z",
   "briefs": [
     {
       "slug": "2026-09-07-week-ahead",
@@ -12,6 +12,74 @@
         "Engagement Tracker",
         "Suggested Email Drafts",
         "Weather",
+        "Headlines",
+        "Check These Out",
+        "Tips"
+      ]
+    },
+    {
+      "slug": "2026-08-31-week-ahead",
+      "date": "2026-08-31",
+      "path": "briefs/2026-08-31-week-ahead.html",
+      "title": "Week Ahead — Monday, August 31 2026",
+      "dateline": "Monday · August 31 2026",
+      "lede": "The statements come back to you this week, Kyle — everything else is other people’s turn.",
+      "sections": [
+        "Engagement Tracker",
+        "Suggested Email Drafts",
+        "Weather",
+        "Headlines",
+        "Check These Out",
+        "Tips"
+      ]
+    },
+    {
+      "slug": "2026-08-17-week-ahead",
+      "date": "2026-08-17",
+      "path": "briefs/2026-08-17-week-ahead.html",
+      "title": "Week ahead — Monday, August 17 2026",
+      "dateline": "Monday · August 17 2026",
+      "lede": "Two open questions stand between the drafts and a finished set, Kyle.",
+      "sections": [
+        "Engagement tracker — Kayenta Township FY2022",
+        "Suggested email drafts",
+        "Weather",
+        "Headlines",
+        "Check these out",
+        "Tips"
+      ]
+    },
+    {
+      "slug": "2026-08-10-week-ahead",
+      "date": "2026-08-10",
+      "path": "briefs/2026-08-10-week-ahead.html",
+      "title": "Week Ahead — Monday, August 10, 2026",
+      "dateline": "Monday · August 10 2026",
+      "lede": "Two partner calls open the week, Kyle — then the statements are yours to draft.",
+      "sections": [
+        "Engagement Tracker — Kayenta Township FY2022",
+        "Last week",
+        "This week’s priorities",
+        "Follow-ups needed",
+        "Suggested email drafts",
+        "Weather — Phoenix",
+        "Headlines",
+        "Check these out",
+        "Tips"
+      ]
+    },
+    {
+      "slug": "2026-08-03-week-ahead",
+      "date": "2026-08-03",
+      "path": "briefs/2026-08-03-week-ahead.html",
+      "title": "Monday Brief — August 3, 2026",
+      "dateline": "Monday · August 3 2026",
+      "lede": "Three areas closed in ten days, Kyle — this week Kayenta starts converging on the binder.",
+      "sections": [
+        "Engagement Tracker — Kayenta Township FY2022 · Last Week Recap",
+        "This Week's Priorities",
+        "Follow-Ups Needed",
+        "Weather — Phoenix Week Ahead",
         "Headlines",
         "Check These Out",
         "Tips"

@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const briefsDir = join(root, 'briefs');
+const TEXT_LIMIT = 20000;
 
 const ENTITIES = {
   amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
@@ -25,9 +26,9 @@ const decode = (s) =>
 
 const strip = (s) => decode(s.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
 
-const first = (html, re) => {
+const first = (html, re, group = 1) => {
   const m = html.match(re);
-  return m ? strip(m[1]) : '';
+  return m ? strip(m[group]) : '';
 };
 
 const files = (await readdir(briefsDir))
@@ -36,6 +37,7 @@ const files = (await readdir(briefsDir))
   .reverse(); // newest first
 
 const briefs = [];
+const searchText = {};
 for (const file of files) {
   const slug = file.replace(/\.html$/, '');
   const date = (slug.match(/^(\d{4}-\d{2}-\d{2})/) || [])[1] || '';
@@ -51,16 +53,33 @@ for (const file of files) {
     date,
     path: `briefs/${file}`,
     title: first(html, /<title>([\s\S]*?)<\/title>/i) || slug,
-    dateline: first(body, /<p class="daydate"[^>]*>([\s\S]*?)<\/p>/i),
+    // Briefs use <p class="daydate"> or <div class="daydate"> depending on
+    // which generation produced them, so match on the class, not the tag.
+    dateline: first(
+      body,
+      /<(\w+)[^>]*\bclass="[^"]*\bdaydate\b[^"]*"[^>]*>([\s\S]*?)<\/\1>/i,
+      2,
+    ),
     lede: first(body, /<h1[^>]*>([\s\S]*?)<\/h1>/i),
     sections: [...body.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/gi)]
       .map((m) => strip(m[1]))
       .filter(Boolean),
   });
+  searchText[slug] = strip(body).slice(0, TEXT_LIMIT);
 }
+
+const stamp = new Date().toISOString();
 
 await writeFile(
   join(root, 'briefs.json'),
-  JSON.stringify({ generated: new Date().toISOString(), briefs }, null, 2) + '\n',
+  JSON.stringify({ generated: stamp, briefs }, null, 2) + '\n',
 );
+
+// Kept separate from briefs.json: the dashboard needs the metadata to paint,
+// but only needs the body text once someone actually types in the filter.
+await writeFile(
+  join(root, 'search.json'),
+  JSON.stringify({ generated: stamp, text: searchText }) + '\n',
+);
+
 console.log(`briefs.json: ${briefs.length} brief(s)`);

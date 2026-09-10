@@ -1,0 +1,11 @@
+{
+  "name": "monday-morning-briefs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static index for the Monday morning briefs.",
+  "type": "module",
+  "scripts": {
+    "index": "node scripts/build-index.mjs",
+    "dev": "node scripts/build-index.mjs && python3 -m http.server 4000"
+  }
+}

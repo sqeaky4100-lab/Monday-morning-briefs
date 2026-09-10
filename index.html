@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Monday Morning Briefs</title>
+<meta name="description" content="Index of the Monday morning briefs.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/fonts.css">
+<style>
+:root{
+  --bg:#FCFCFB; --wash:#F9F9F7; --ink:#2E2C27; --ink-soft:#6B6A63;
+  --ink-grey:#B4B3A8; --hair:#E4E3DC; --edge:#E1E1DF; --clay:#C6613F;
+  --sys:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --serif:'Fraunces',Georgia,serif;
+  --rail:308px;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;background:var(--bg);color:var(--ink-soft);
+  font-family:var(--sys);font-size:15px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;}
+
+/* ── top bar ───────────────────────────────────────── */
+.app{display:flex;flex-direction:column;height:100%;}
+.bar{
+  flex:0 0 auto;display:flex;align-items:center;gap:16px;
+  padding:0 20px;height:56px;
+  background:var(--wash);border-bottom:1px solid var(--edge);
+}
+.mark{
+  font-family:var(--serif);font-weight:600;font-size:17px;
+  color:var(--ink);letter-spacing:-.01em;white-space:nowrap;
+}
+.mark span{color:var(--ink-grey);}
+.bar .spacer{flex:1 1 auto;}
+.ghost{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12.5px;letter-spacing:.02em;color:var(--ink-soft);
+  text-decoration:none;padding:6px 11px;border:1px solid var(--edge);
+  border-radius:5px;background:var(--bg);white-space:nowrap;
+}
+.ghost:hover{color:var(--ink);border-color:var(--ink-grey);}
+.ghost svg{width:14px;height:14px;fill:currentColor;flex:0 0 auto;}
+
+/* ── layout ────────────────────────────────────────── */
+.body{flex:1 1 auto;display:flex;min-height:0;}
+
+.rail{
+  flex:0 0 var(--rail);width:var(--rail);
+  background:var(--wash);border-right:1px solid var(--edge);
+  display:flex;flex-direction:column;min-height:0;
+}
+.filter{flex:0 0 auto;padding:14px 16px;border-bottom:1px solid var(--hair);}
+.filter input{
+  width:100%;font:inherit;font-size:13.5px;color:var(--ink);
+  padding:7px 10px;background:var(--bg);
+  border:1px solid var(--edge);border-radius:5px;
+}
+.filter input::placeholder{color:var(--ink-grey);}
+.filter input:focus{outline:none;border-color:var(--ink-grey);}
+
+.list{flex:1 1 auto;overflow-y:auto;padding:6px 0 28px;}
+.group{
+  font-size:11px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-grey);padding:16px 16px 7px;
+}
+.item{
+  display:block;width:100%;text-align:left;background:none;
+  border:0;border-left:2px solid transparent;
+  font:inherit;color:inherit;cursor:pointer;
+  padding:11px 16px 12px 18px;text-decoration:none;
+}
+.item:hover{background:var(--bg);}
+.item[aria-current="true"]{background:var(--bg);border-left-color:var(--clay);}
+.item .d{
+  font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-grey);margin-bottom:3px;
+}
+.item[aria-current="true"] .d{color:var(--clay);}
+.item .t{
+  font-family:var(--serif);font-weight:600;font-size:16px;line-height:1.28;
+  color:var(--ink);letter-spacing:-.01em;margin-bottom:4px;
+}
+.item .l{
+  font-size:12.5px;line-height:1.5;color:var(--ink-soft);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  line-clamp:2;overflow:hidden;
+}
+
+/* ── reading pane ──────────────────────────────────── */
+.pane{flex:1 1 auto;display:flex;flex-direction:column;min-width:0;min-height:0;}
+.meta{
+  flex:0 0 auto;display:flex;align-items:flex-start;gap:16px;
+  padding:15px 24px 14px;border-bottom:1px solid var(--edge);background:var(--bg);
+}
+.meta .txt{min-width:0;flex:1 1 auto;}
+.meta .d{
+  font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-grey);margin:0 0 3px;
+}
+.meta h2{
+  font-family:var(--serif);font-weight:600;font-size:19px;line-height:1.25;
+  color:var(--ink);letter-spacing:-.01em;margin:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.chip{
+  font-size:11px;letter-spacing:.04em;color:var(--ink-soft);
+  border:1px solid var(--hair);border-radius:99px;padding:2px 8px;
+}
+.frame{flex:1 1 auto;width:100%;border:0;background:var(--bg);min-height:0;}
+
+.msg{
+  margin:auto;max-width:420px;padding:40px 24px;text-align:center;
+  font-size:14px;color:var(--ink-soft);
+}
+.msg strong{display:block;font-family:var(--serif);font-size:19px;color:var(--ink);margin-bottom:8px;}
+.msg code{font-size:12.5px;background:var(--wash);border:1px solid var(--hair);border-radius:4px;padding:1px 5px;}
+
+.rail-only .pane{display:none;}
+
+/* ── narrow screens: the rail becomes the whole page ─ */
+@media (max-width:860px){
+  .body{display:block;overflow-y:auto;}
+  .rail{width:100%;flex:none;border-right:0;min-height:100%;}
+  .pane{display:none;}
+  .bar .open{display:none;}
+  .item .l{-webkit-line-clamp:3;line-clamp:3;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="bar">
+    <div class="mark">Monday Morning <span>Briefs</span></div>
+    <div class="spacer"></div>
+    <a class="ghost open" id="open" href="#" hidden>Open full page &#8599;</a>
+    <a class="ghost" href="https://github.com/sqeaky4100-lab/monday-morning-briefs" rel="noopener">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      GitHub
+    </a>
+  </header>
+
+  <div class="body">
+    <nav class="rail" aria-label="Briefs">
+      <div class="filter"><input id="q" type="search" placeholder="Filter briefs" aria-label="Filter briefs" autocomplete="off"></div>
+      <div class="list" id="list"></div>
+    </nav>
+    <main class="pane" id="pane">
+      <div class="meta">
+        <div class="txt">
+          <p class="d" id="m-date"></p>
+          <h2 id="m-title"></h2>
+          <div class="chips" id="m-chips"></div>
+        </div>
+      </div>
+      <iframe class="frame" id="frame" title="Selected brief"></iframe>
+    </main>
+  </div>
+</div>
+
+<script>
+(function () {
+  var list = document.getElementById('list');
+  var pane = document.getElementById('pane');
+  var frame = document.getElementById('frame');
+  var open = document.getElementById('open');
+  var q = document.getElementById('q');
+  var mDate = document.getElementById('m-date');
+  var mTitle = document.getElementById('m-title');
+  var mChips = document.getElementById('m-chips');
+
+  var briefs = [];
+  var shown = [];
+  var current = null;
+  var narrow = window.matchMedia('(max-width: 860px)');
+
+  function message(title, detail) {
+    list.innerHTML = '';
+    var d = document.createElement('div');
+    d.className = 'msg';
+    var s = document.createElement('strong');
+    s.textContent = title;
+    d.appendChild(s);
+    d.appendChild(document.createTextNode(detail));
+    list.appendChild(d);
+    document.querySelector('.app').classList.add('rail-only');
+  }
+
+  var MONTHS = ['January','February','March','April','May','June','July',
+                'August','September','October','November','December'];
+
+  function parts(iso) {
+    var p = iso.split('-');
+    return { y: +p[0], m: +p[1] - 1, d: +p[2] };
+  }
+  function shortDate(iso) {
+    var p = parts(iso);
+    return MONTHS[p.m].slice(0, 3) + ' ' + p.d;
+  }
+  function groupLabel(iso) {
+    var p = parts(iso);
+    return MONTHS[p.m] + ' ' + p.y;
+  }
+
+  function render() {
+    list.innerHTML = '';
+    if (!shown.length) {
+      var e = document.createElement('p');
+      e.className = 'group';
+      e.textContent = briefs.length ? 'No matches' : 'No briefs yet';
+      list.appendChild(e);
+      return;
+    }
+    var group = null;
+    shown.forEach(function (b) {
+      var g = groupLabel(b.date);
+      if (g !== group) {
+        group = g;
+        var h = document.createElement('div');
+        h.className = 'group';
+        h.textContent = g;
+        list.appendChild(h);
+      }
+      var a = document.createElement('a');
+      a.className = 'item';
+      a.href = b.path;
+      a.dataset.slug = b.slug;
+      a.setAttribute('aria-current', String(b.slug === current));
+      a.innerHTML =
+        '<div class="d"></div><div class="t"></div><div class="l"></div>';
+      a.querySelector('.d').textContent = shortDate(b.date);
+      a.querySelector('.t').textContent = b.title;
+      a.querySelector('.l').textContent = b.lede || b.dateline || '';
+      a.addEventListener('click', function (ev) {
+        // On narrow screens let the link navigate straight to the brief.
+        if (narrow.matches || ev.metaKey || ev.ctrlKey || ev.shiftKey) return;
+        ev.preventDefault();
+        select(b.slug, true);
+      });
+      list.appendChild(a);
+    });
+  }
+
+  function select(slug, pushHash) {
+    var b = briefs.filter(function (x) { return x.slug === slug; })[0];
+    if (!b) return;
+    current = slug;
+    if (pushHash && location.hash.slice(1) !== slug) location.hash = slug;
+
+    mDate.textContent = b.dateline || b.date;
+    mTitle.textContent = b.title;
+    mChips.innerHTML = '';
+    (b.sections || []).forEach(function (s) {
+      var c = document.createElement('span');
+      c.className = 'chip';
+      c.textContent = s;
+      mChips.appendChild(c);
+    });
+    open.href = b.path;
+    open.hidden = false;
+    frame.src = b.path;
+    document.title = b.title + ' — Monday Morning Briefs';
+
+    Array.prototype.forEach.call(list.querySelectorAll('.item'), function (el) {
+      el.setAttribute('aria-current', String(el.dataset.slug === slug));
+    });
+    var active = list.querySelector('[aria-current="true"]');
+    if (active && active.scrollIntoView) {
+      active.scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function step(delta) {
+    if (!shown.length) return;
+    var i = shown.findIndex(function (b) { return b.slug === current; });
+    var next = shown[Math.max(0, Math.min(shown.length - 1, i + delta))];
+    if (next) select(next.slug, true);
+  }
+
+  // Search what the list actually shows — the month and short date labels —
+  // not just the ISO date, so "aug" and "september" both find something.
+  function haystack(b) {
+    if (b._hay === undefined) {
+      b._hay = [b.title, b.dateline, b.lede, (b.sections || []).join(' '),
+                b.date, shortDate(b.date), groupLabel(b.date), b.slug]
+        .join(' ').toLowerCase();
+    }
+    return b._hay;
+  }
+
+  q.addEventListener('input', function () {
+    var term = q.value.trim().toLowerCase();
+    shown = !term ? briefs.slice() : briefs.filter(function (b) {
+      return haystack(b).indexOf(term) > -1;
+    });
+    render();
+  });
+
+  document.addEventListener('keydown', function (ev) {
+    if (ev.target === q || narrow.matches) return;
+    if (ev.key === 'ArrowDown' || ev.key === 'j') { ev.preventDefault(); step(1); }
+    if (ev.key === 'ArrowUp' || ev.key === 'k') { ev.preventDefault(); step(-1); }
+  });
+
+  window.addEventListener('hashchange', function () {
+    var slug = decodeURIComponent(location.hash.slice(1));
+    if (slug && slug !== current) select(slug, false);
+  });
+
+  fetch('briefs.json', { cache: 'no-cache' })
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      briefs = (data.briefs || []).slice().sort(function (a, b) {
+        return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
+      });
+      shown = briefs.slice();
+      if (!briefs.length) {
+        render();
+        pane.style.display = 'none';
+        return;
+      }
+      var wanted = decodeURIComponent(location.hash.slice(1));
+      var exists = briefs.some(function (b) { return b.slug === wanted; });
+      // Narrow screens have no reading pane, so nothing is "selected" there.
+      current = narrow.matches ? null : (exists ? wanted : briefs[0].slug);
+      render();
+      if (narrow.matches) {
+        // No reading pane here, so a shared #slug link goes to the brief itself.
+        if (exists) location.replace(briefs.filter(function (b) {
+          return b.slug === wanted;
+        })[0].path);
+        return;
+      }
+      select(current, false);
+    })
+    .catch(function (err) {
+      message('Could not load the index',
+        'briefs.json did not load (' + err.message + '). Serve this folder over ' +
+        'HTTP rather than opening the file directly.');
+    });
+})();
+</script>
+</body>
+</html>
